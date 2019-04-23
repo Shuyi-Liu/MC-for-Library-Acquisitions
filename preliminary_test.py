@@ -79,86 +79,55 @@ def space_solution(plan):
 
 def Monte(budget, space, num_of_titles, simulation):
 
-    # total_price = []
-    # total_thickness = []
-    # for i in range(simulation):
+    final_prices = []
+    final_space = []
+    for i in range(simulation):
+        plan = all_book(num_of_titles)
 
-    plan = all_book(num_of_titles)
+        total_price = plan['Price'].sum() * (1 - vendor_discount(num_of_titles))
+        total_space = plan['Thickness'].sum()
+        # print("This is the total price", total_price, type(total_price), type(plan['Price'].sum()), type(vendor_discount(num_of_titles)))
+        # print("This is the total space", total_space, type(total_space))
+        if total_price <= budget:
+            if total_space <= space:
+                print('The plan is fine:')
 
-    total_price = plan['Price'].sum() * (1 - vendor_discount(num_of_titles))
-    total_space = plan['Thickness'].sum()
-    # print("This is the total price", total_price, type(total_price), type(plan['Price'].sum()), type(vendor_discount(num_of_titles)))
-    # print("This is the total space", total_space, type(total_space))
-    if total_price <= budget:
-        if total_space <= space:
-            print('The plan is fine:')
+            elif total_space > space:
+                print("The budget is enough, but we don't have enough space.\nThe new plan is:")
+                while total_space > space:
+                    plan = space_solution(plan)
+                    total_space = plan['Thickness'].sum()
 
-        elif total_space > space:
-            print("The budget is enough, but we don't have enough space.\nThe new plan is:")
-            while total_space > space:
-                plan = space_solution(plan)
-                total_space = plan['Thickness'].sum()
+        elif total_price > budget:
+            print("The budget is not enough.\nWe need a new plan.")
+            while total_price > budget:
+                plan = price_solution(plan)
+                total_price = plan['Price'].sum() * (1 - vendor_discount(num_of_titles))
 
-    elif total_price > budget:
-        print("The budget is not enough.\nWe need a new plan.")
-        while total_price > budget:
-            plan = price_solution(plan)
-            total_price = plan['Price'].sum() * (1 - vendor_discount(num_of_titles))
+            if total_space <= space:
+                print("The new plan is:")
 
-        if total_space <= space:
-            print("The new plan is:")
-
-        elif total_space > space:
-            print("The new plan has no enough space.\nChange it.")
-            while total_space > space:
-                plan = space_solution(plan)
-                total_space = plan['Thickness'].sum()
-    final_price = plan['Price'].sum()
-    final_space = total_space
-    print(final_price)
-    print(total_space)
-
-        # a = plan['Price'].sum()
-        # b = plan['thickness'].sum()
-        # total_price.append(a)
-        # total_price.append(b)
-    # total_price = new_plan['Price'].sum()
-    # total_thickness = new_plan['Thickness'].sum()
-    # d = {'total_cost': total_price, 'total_thickness': total_thickness}
-
-    # final_plan = pd.DataFrame(data = d)
+            elif total_space > space:
+                print("The new plan has no enough space.\nChange it.")
+                while total_space > space:
+                    plan = space_solution(plan)
+                    total_space = plan['Thickness'].sum()
+        final_price = plan['Price'].sum()
+        # final_space = total_space
+        final_prices.append(final_price)
+        final_space.append(total_space)
+    final_plan = pd.DataFrame({'final_price': final_prices, 'final_space': final_space})
 
 
-
-    # final_plan = pd.DataFrame({'final_price': final_price, 'final_space': final_space})
-    # print
-
-
-    return final_price, final_space
-
-
-# def simulation(num_of_sim):
-#     budget = input("Please write your budget for a month: ")
-#     space = input("Please write available space: ")
-#     num_of_titles = input("Please write number of titles you intend to purchase: ")
-#     for i in range(num_of_sim):
-#         Monte(budget, space, num_of_titles)
-
-
-            # plan_titles = len(plan.index)
-            # plan_cost = plan['Price'].sum()
-            # plan_space = plan['Thickness'].sum()
-            #
-            # print(plan_titles)
-            # final_plan = pd.DataFrame({'num': plan_titles,
-            #                            'total_price': plan_cost,
-            #                            'total_space': plan_space})
-            # print('\nThe final plan is:', final_plan)
-            # return final_plan
-
-
-
+    return final_plan
 
 print(Monte(300000, 100, 20, 5))
+
+
+
+
+
+
+
 
 
