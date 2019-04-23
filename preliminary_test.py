@@ -78,7 +78,7 @@ def space_solution(plan):
 
 
 def Monte(budget, space, num_of_titles, simulation):
-
+    final_num_books = []
     final_prices = []
     final_space = []
     for i in range(simulation):
@@ -91,6 +91,7 @@ def Monte(budget, space, num_of_titles, simulation):
         if total_price <= budget:
             if total_space <= space:
                 print('The plan is fine:')
+                # plan = plan
 
             elif total_space > space:
                 print("The budget is enough, but we don't have enough space.\nThe new plan is:")
@@ -112,16 +113,23 @@ def Monte(budget, space, num_of_titles, simulation):
                 while total_space > space:
                     plan = space_solution(plan)
                     total_space = plan['Thickness'].sum()
+        total_num_book = len(plan.index)
+        final_num_books.append(total_num_book)
         final_price = plan['Price'].sum()
         # final_space = total_space
         final_prices.append(final_price)
         final_space.append(total_space)
-    final_plan = pd.DataFrame({'final_price': final_prices, 'final_space': final_space})
+    final_plan = pd.DataFrame({'total_books': final_num_books, 'final_price': final_prices, 'final_space': final_space})
 
 
     return final_plan
+# budget = int(input("please:" ))
+# space = int(input(": "))
+# number = int(input(":" ))
+# simulation = int(input(": "))
 
-print(Monte(300000, 100, 20, 5))
+# print(Monte(budget, space, number, simulation))
+print(Monte(100000, 400, 20, 100))
 
 
 
