@@ -3,34 +3,55 @@ import numpy as np
 import pandas as pd
 
 
-def all_book(num_of_titles):
+def get_attributes(num_of_titles):
     '''
     This is getting attributes of books, thickness and prices. The price will caculate randomly depedning on its thickness.
     :param num_of_titles: Integer. a number of titles a librarian would like to purchase.
     :return: DataFrame, columns are thickness and price.
+    >>> a = all_book(10)
+    >>> len(a)
+        10
+    >>> 20 < thickness_list < 50000
+    True
+    >>> 1 < price_list < 200
+    True
+
     '''
-    thickness_list = []
+    pages_list = []
     for i in range(num_of_titles):
-        thickness = round(random.uniform(0.1, 20), 2)
-        thickness_list.append(thickness)
-    # print("This is the random thickness:", thickness_list)
+        page = round(random.uniform(10, 2000), 2)
+        pages_list.append(page)
+    print("This is the random pages:", pages_list)
+    thickness_list = []
+    for i in pages_list:
+        thickness1 = round(random.uniform(0.1, 10), 2)
+        thickness2 = round(random.uniform(10, 15), 2)
+        thickness3 = round(random.uniform(15, 20), 2)
+        if i <= 100:
+            thickness_list.append(thickness1)
+        elif 100 < i <= 300:
+            thickness_list.append(thickness2)
+        elif 300 < i:
+            thickness_list.append(thickness3)
+    print("thickness_list", thickness_list)
     price_list = []
-    for i in thickness_list:
+    for i in pages_list:
         price1 = round(random.uniform(1, 50), 2)
         price2 = round(random.uniform(50, 100), 2)
         price3 = round(random.uniform(100, 200), 2)
-        if i <= 5:
+        if i <= 100:
             price_list.append(price1)
-        elif 5 < i <= 10:
+        elif 100 < i <= 300:
             price_list.append(price2)
-        elif i > 10:
+        elif i > 300:
             price_list.append(price3)
-    # print("This is the random price", price_list)
+    print("This is the random price", price_list)
     df = pd.DataFrame(data={'Thickness': thickness_list,
                             'Price': price_list})
-    print("This is the random book\n", df)
+    # print("This is the random book\n", df)
     return df
 
+print(get_attributes(10))
 
 def vendor_discount(num_of_titles):
     '''
@@ -129,7 +150,7 @@ def Monte(budget, space, num_of_titles, simulation):
 # simulation = int(input(": "))
 
 # print(Monte(budget, space, number, simulation))
-print(Monte(100000, 400, 20, 100))
+# print(Monte(100000, 40000, 20, 5))
 
 
 
