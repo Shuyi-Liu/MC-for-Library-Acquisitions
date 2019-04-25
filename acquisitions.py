@@ -16,7 +16,7 @@ class acquisitions:
         else:
             price = self.price * 130
 
-    def contract(self):
+    def contract(self): # need to create random choice here.
         contract_option = ['one_user', 'three_user', 'unlimited']
         if contract_option == 'one_user':
             price = self.price
@@ -25,7 +25,7 @@ class acquisitions:
         elif contract_option == 'unlimited':
             price = self.price * 200
 
-def get_types(num_of_titles):
+def get_types(num_of_titles): # bring random choice here?
     pb = input("right percentage of printed_book:" )
     eb = input("right percentage of e-book:" )
     both = input("right percentage of both pb and -ebook:" )

@@ -18,40 +18,43 @@ def get_attributes(num_of_titles):
 
     '''
     pages_list = []
-    for i in range(num_of_titles):
-        page = round(random.uniform(10, 2000), 2)
+    for i in range(num_of_titles): #np random
+        page = round(random.randint(10, 2000), 2)
         pages_list.append(page)
     print("This is the random pages:", pages_list)
     thickness_list = []
     for i in pages_list:
-        thickness1 = round(random.uniform(0.1, 10), 2)
-        thickness2 = round(random.uniform(10, 15), 2)
-        thickness3 = round(random.uniform(15, 20), 2)
-        if i <= 100:
-            thickness_list.append(thickness1)
-        elif 100 < i <= 300:
-            thickness_list.append(thickness2)
-        elif 300 < i:
-            thickness_list.append(thickness3)
-    print("thickness_list", thickness_list)
+        page_thickness = random.uniform(0.01, 0.05)
+        thickness = page_thickness * i
+        # thickness1 = round(random.uniform(0.1, 2), 2) # thickness measurement is centimeter.
+        # thickness2 = round(random.uniform(2, 6), 2) # trouble shooting and maintenance, cataloging,
+        # thickness3 = round(random.uniform(6, 10), 2) # fixed cost on top of purchase price. stolen, damage, unusualble, actual building space, easily overall life span of books (decade), rare items. annual frustional cost.
+        # if i <= 300:
+        #     thickness_list.append(thickness1)
+        # elif 300 < i <= 1000:
+        #     thickness_list.append(thickness2)
+        # elif 1000 < i:
+        thickness_list.append(thickness)
+    # print("thickness_list", thickness_list)
     price_list = []
     for i in pages_list:
-        price1 = round(random.uniform(1, 50), 2)
-        price2 = round(random.uniform(50, 100), 2)
+        price1 = round(random.uniform(1, 40), 2)
+        price2 = round(random.uniform(40, 100), 2)
         price3 = round(random.uniform(100, 200), 2)
         if i <= 100:
+            # price1 = round(random.uniform(1, 40), 2)
             price_list.append(price1)
-        elif 100 < i <= 300:
+        elif 100 < i <= 400:
             price_list.append(price2)
-        elif i > 300:
+        elif i > 400:
             price_list.append(price3)
-    print("This is the random price", price_list)
+    # print("This is the random price", price_list)
     df = pd.DataFrame(data={'Thickness': thickness_list,
                             'Price': price_list})
     # print("This is the random book\n", df)
     return df
 
-print(get_attributes(10))
+# print(get_attributes(10))
 
 def vendor_discount(num_of_titles):
     '''
@@ -103,7 +106,7 @@ def Monte(budget, space, num_of_titles, simulation):
     final_prices = []
     final_space = []
     for i in range(simulation):
-        plan = all_book(num_of_titles)
+        plan = get_attributes(num_of_titles)
 
         total_price = plan['Price'].sum() * (1 - vendor_discount(num_of_titles))
         total_space = plan['Thickness'].sum()
@@ -148,6 +151,23 @@ def Monte(budget, space, num_of_titles, simulation):
 # space = int(input(": "))
 # number = int(input(":" ))
 # simulation = int(input(": "))
+if __name__ == '__main__':
+    total_books = []
+    mean_prices = []
+    mean_spaces = []
+    for i in range(30):
+        data = Monte(10000, 40000, 20, 5)
+        # data.append(data)
+        total_book = data['total_books'].mean()
+        total_books.append(total_book)
+        mean_price = data['final_price'].mean()
+        mean_prices.append(mean_price)
+        mean_space = data['final_space'].mean()
+        mean_spaces.append(mean_space)
+        simulation = pd.DataFrame({'total_purchase_book': total_books, 'app_price': mean_prices, 'app_space': mean_spaces})
+    print(simulation)
+
+
 
 # print(Monte(budget, space, number, simulation))
 # print(Monte(100000, 40000, 20, 5))
