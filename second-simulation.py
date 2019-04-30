@@ -157,10 +157,10 @@ def both_select(num_both):
 print(both_select(20))
 
 
-def vendor_discount(num_book):
+def vendor_discount(num_physical):
     """
     Discount percentage vendor will offer.
-    :param num_of_titles: Integer. A number of titles a librarian is going to purchase from a vendor
+    :param num_physical: Integer. A number of titles a librarian is going to purchase from a vendor
     :return: float.
     >>> vendor_discount(50)
     0.01
@@ -238,12 +238,13 @@ def Monte(budget, space, num_of_titles, num_book, num_ebook, num_both, simulatio
         book_plan = book_select(num_book)
         ebook_plan = ebook_select(num_ebook)
         both_plan = both_select(num_both)
-        book_price = book_plan['Price'].sum() * (1 - vendor_discount(num_of_titles))
-        book_thickness = book_plan['Thickness'].sum()
-        ebook_price = ebook_plan['ePrice'].sum()
-        both_price = both_plan['Physical Price'].sum() + both_plan['E-version Price'].sum()
+        num_physical = num_book + num_both
+        all_physical_price = (book_plan['Price'].sum() +
+                              both_plan['Physical Price'].sum()) * (1 - vendor_discount(num_physical))
+        all_ebook_price = ebook_plan['ePrice'].sum() + both_plan['E-version Price'].sum()
         both_thickness = both_plan['Thickness'].sum()
-        total_price = book_price + ebook_price + both_price
+        book_thickness = book_plan['Thickness'].sum()
+        total_price = all_physical_price + all_ebook_price
         total_thickness = book_thickness + both_thickness
         if total_price <= budget:
             if total_thickness <= space:
@@ -251,7 +252,7 @@ def Monte(budget, space, num_of_titles, num_book, num_ebook, num_both, simulatio
             elif total_thickness > space:
                 if book_thickness > space:
                     print("The budget is enough, but we don't have enough space.\n"
-                          "We will remove some books. The new plan is:")
+                          "We will remove all the physical book from 'Both' type, and some books. The new plan is:")
                     both_plan[both_plan['Physical Price']] = 0
                     both_plan[both_plan['Thickness']] = 0
                     while book_thickness > space:
@@ -264,7 +265,11 @@ def Monte(budget, space, num_of_titles, num_book, num_ebook, num_both, simulatio
                         both_plan = both_solution(both_plan)
                         total_thickness = both_plan['Thickness'].sum() + book_thickness
         elif total_price > budget:
-            print("Our budget is not enough. We will remove the higher price in 'Both' type.\n")
+            both_price = both_plan['Physical Price'].sum() * (1-vendor_discount(num_both)) + both_plan['E-version Price'].sum()
+            if both_price > budget:
+                print("Our budget is NOT enough.\nWe will remove the copy that has the higher price,"
+                      "and keep only one copy of the titles in the 'Both' type.\n")
+            print("Our budget is not enough." )
             while total_price > budget:
                 both_plan = both_price_solution(both_plan)
                 both_price = both_plan['Physical Price'].sum() + both_plan['E-version Price'].sum()
