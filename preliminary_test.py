@@ -17,7 +17,6 @@ class labors:
         benefit_rate = random.uniform(0, 0.3)
         total_work_hour = random.choice(1950, 2080)
 
-
 def get_cataloging_cost(num_of_titles):
 
     average_cost = labors.annual_wages + (labors.annual_wages * labors.benefit_rate) / labors.total_work_hour
