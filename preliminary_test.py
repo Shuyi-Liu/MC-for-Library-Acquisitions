@@ -40,19 +40,25 @@ def get_attributes(num_of_titles):
     True
 
     '''
-    pages_list = []
-    for i in range(num_of_titles): #np random
-        page = round(random.randint(10, 2000), 2)
-        pages_list.append(page)
+    # pages_list = []
+    # for i in range(num_of_titles): #np random
+    #     # pages_list = np.random.randint(
+    #     page = round(random.randint(10, 2000), 2)
+    #     pages_list.append(page)
     # print("This is the random pages:", pages_list)
-    thickness_list = []
-    for i in pages_list:
-        page_thickness = random.uniform(0.01, 0.05)
-        thickness = page_thickness * i
-        thickness_list.append(thickness)
+    # thickness_list = []
+    # for i in pages_list:
+    #     page_thickness = random.uniform(0.01, 0.05)
+    #     thickness = page_thickness * i
+    pages = np.random.randint(10, 2000, size=num_of_titles)
+    page_thickness = random.uniform(0.01, 0.05)
+    thickness = np.around(page_thickness * pages, decimals=2)
+    page_price = random.uniform(0.01, 1)
+    price = np.around(page_price * pages, decimals=2)
+        # thickness_list.append(thickness)
     # print("thickness_list", thickness_list)
     price_list = []
-    for i in pages_list:
+    for i in pages:
         price1 = round(random.uniform(1, 40), 2)
         price2 = round(random.uniform(40, 100), 2)
         price3 = round(random.uniform(100, 200), 2)
@@ -64,7 +70,7 @@ def get_attributes(num_of_titles):
         elif i > 400:
             price_list.append(price3)
     # print("This is the random price", price_list)
-    df = pd.DataFrame(data={'Thickness': thickness_list,
+    df = pd.DataFrame(data={'Thickness': thickness,
                             'Price': price_list})
     # print("This is the random book\n", df)
     return df
@@ -164,23 +170,23 @@ def MonteCarloSimulation(annual_work_hour, total_volume, budget, space, num_of_t
 
     return final_plan
 
-# print(MonteCarloSimulation(1950, 100, 500, 1000000, 5, 1))
+print(MonteCarloSimulation(1950, 100, 500, 1000000, 5, 100))
 
-if __name__ == '__main__':
-    total_books = []
-    mean_prices = []
-    mean_spaces = []
-    for i in range(30):
-        data = Monte(10000, 40000, 20, 5)
-        # data.append(data)
-        total_book = data['total_books'].mean()
-        total_books.append(total_book)
-        mean_price = data['final_price'].mean()
-        mean_prices.append(mean_price)
-        mean_space = data['final_space'].mean()
-        mean_spaces.append(mean_space)
-        simulation = pd.DataFrame({'total_purchase_book': total_books, 'app_price': mean_prices, 'app_space': mean_spaces})
-    print(simulation)
+# if __name__ == '__main__':
+#     total_books = []
+#     mean_prices = []
+#     mean_spaces = []
+#     for i in range(30):
+#         data = MonteCarloSimulation(1950, 100, 500, 10000, 5, 100)
+#         # data.append(data)
+#         total_book = data['total_books'].mean()
+#         total_books.append(total_book)
+#         mean_price = data['final_price'].mean()
+#         mean_prices.append(mean_price)
+#         mean_space = data['final_space'].mean()
+#         mean_spaces.append(mean_space)
+#         simulation = pd.DataFrame({'total_purchase_book': total_books, 'app_price': mean_prices, 'app_space': mean_spaces})
+#     print(simulation)
 
 
 
