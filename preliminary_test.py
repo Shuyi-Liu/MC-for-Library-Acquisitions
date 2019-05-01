@@ -4,25 +4,29 @@ import pandas as pd
 import math
 
 
-class labors:
-    def __set__(self, annual_wages, benefit_rate, work_hour, paid_vacation_hour):
-        labors.self = self
-        labors.annual_wages = annual_wages
-        labors.benefit_rate = benefit_rate
-        labors.work_hour = work_hour
-        labors.paid_vacation_hour = paid_vacation_hour
+# class labors:
+#     def __set__(self, annual_wages, benefit_rate, work_hour, paid_vacation_hour):
+#         labors.self = labors
+#         labors.annual_wages = annual_wages
+#         labors.benefit_rate = benefit_rate
+#         labors.work_hour = work_hour
+#         labors.paid_vacation_hour = paid_vacation_hour
 
-    def costs(self):
-        annual_wages = random.randint(50000, 70000)
-        benefit_rate = random.uniform(0, 0.3)
-        total_work_hour = random.choice(1950, 2080)
+
+
+
 
 def get_cataloging_cost(num_of_titles):
-
-    average_cost = labors.annual_wages + (labors.annual_wages * labors.benefit_rate) / labors.total_work_hour
+    annual_wages = random.randint(50000, 70000)
+    benefit_rate = random.uniform(0, 0.3)
+    paid_off_hour = random.randint(0, 42)
+    average_cost = (annual_wages + (annual_wages * benefit_rate)) / (1950 - paid_off_hour)
     hourly_cataloging_items = math.ceil(num_of_titles / random.randint(10, 12))
+    print(hourly_cataloging_items)
+    print(average_cost)
     labor_cost = average_cost * hourly_cataloging_items
-    return labor_cost
+    return round(labor_cost, 2)
+# print(get_cataloging_cost(10000))
 
 # def get_circulation_cost():
 
