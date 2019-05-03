@@ -155,6 +155,13 @@ def MonteCarloSimulation(annual_work_hour, total_volume, budget, space, num_of_t
     :param space: float
     :param num_of_titles: integer
     :return: list which contains number of books, costs, and thickness of both users' demand and expansion of volumes of collection (considering book price at first)
+    >>> list = MonteCarloSimulation(1950, 50000, 1000000000, 10000, 100000)
+    >>> len(list)
+    6
+    >>> list[0] < 100000
+    True
+    >>> list[3] < 100000
+    True
 
     '''
     acquisition_budget = budget - maintenance_cost(annual_work_hour, total_volume)
