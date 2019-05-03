@@ -176,7 +176,7 @@ def MonteCarloSimulation(annual_work_hour, total_volume, budget, space, num_of_t
     demand_thickness = math.ceil(demand_acquisition['Thickness'].sum())
 
     price_book = price_acquisition['Price'].count()
-    price_cost = round(price_acquisition['total_cost_per_book'].sum() * 1 - vendor_discount(price_book), 2)
+    price_cost = round(price_acquisition['total_cost_per_book'].sum() * (1 - vendor_discount(price_book), 2))
     price_thickness = math.ceil(price_acquisition['Thickness'].sum())
 
     sim_data = [demand_book, demand_cost, demand_thickness, price_book, price_cost, price_thickness]
