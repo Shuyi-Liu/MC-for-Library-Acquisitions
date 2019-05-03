@@ -103,11 +103,11 @@ def select_book(plan, budget, space):
     # def select_book(plan, space, budget):
     select_plan = plan.copy(deep=True)
     select_plan['total_cost_per_book'] = select_plan['Price'] + select_plan['cataloging_cost']
-    print('This is select plan\n\n', select_plan, '\n')
+    # print('This is select plan\n\n', select_plan, '\n')
     select_plan['cost_accumulate'] = select_plan['total_cost_per_book'].cumsum().where(lambda x: x <= budget)
-    print('thisi is price\n\n', select_plan)
+    # print('thisi is price\n\n', select_plan)
     select_plan['Total_thickness'] = select_plan['Thickness'].cumsum().where(lambda x:x <= space)
-    print('This is thickness\n\n', select_plan)
+    # print('This is thickness\n\n', select_plan)
     acquisitions = select_plan.dropna()
     return acquisitions
 
@@ -128,44 +128,40 @@ def MonteCarloSimulation(annual_work_hour, total_volume, budget, space, num_of_t
 
     demand_book = demand_acquisition['Price'].count()
     demand_cost = round(demand_acquisition['total_cost_per_book'].sum() * (1 - vendor_discount(demand_book)), 2)
-    demand_thickness = demand_acquisition['Thickness'].sum()
+    demand_thickness = math.ceil(demand_acquisition['Thickness'].sum())
 
     price_book = price_acquisition['Price'].count()
     price_cost = round(price_acquisition['total_cost_per_book'].sum() * 1 - vendor_discount(price_book), 2)
-    price_thickness = price_acquisition['Thickness'].sum()
+    price_thickness = math.ceil(price_acquisition['Thickness'].sum())
 
-    print(demand_book, demand_cost, demand_thickness, price_book, price_cost, price_thickness)
+    sim_data = [demand_book, demand_cost, demand_thickness, price_book, price_cost, price_thickness]
+    # print(demand_book, demand_cost, demand_thickness, price_book, price_cost, price_thickness)
+    # print(sim_data)
+
     # print(price_acquisition)
 
-    return demand_book, demand_cost, demand_thickness, price_book, price_cost, price_thickness
+    return sim_data
 
-print(MonteCarloSimulation(1950, 50000, 1000000000, 10000, 100000))
+# print(MonteCarloSimulation(1950, 50000, 1000000000, 10000, 100000))
 
 
 
 if __name__ == '__main__':
 
 
+    datas = []
+    for i in range(100):
+        data = MonteCarloSimulation(1950, 50000, 1000000000, 10000, 100000)
+        datas.append(data)
+    simulation_result = pd.DataFrame(datas, columns={'num_of_books_by_demand',
+                                                     'total_cost_by_demand',
+                                                     'total_thickness_by_demand',
+                                                     'num_of_books_by_price',
+                                                     'total_cost_by_price',
+                                                     'total_thickness_by_price'})
+    print(simulation_result)
 
-    demand_book = []
-    demand_cost = []
-    demand_thickness = []
-    price_book = []
-    price_cost = []
-    price_thickness = []
-    a = []
-    for i in range(2):
-        b = MonteCarloSimulation(1950, 50000, 1000000000, 10000, 100000)
-        a.append(b)
-    print(a)
 
-    #     num_purchase_book = data['Price'].count()
-    #     total_price = data['Price'].sum()
-    #     all_thickness = data['Thickness'].sum()
-    #     nums.append(num_purchase_book)
-    #     total_costs.append(total_price)
-    #     total_thickness.append(all_thickness)
-    # simulation = pd.DataFrame({'total_purchase_book': nums, 'app_price': total_costs, 'app_space': total_thickness})
-    #
-    # print(simulation)
+
+
 
