@@ -28,7 +28,7 @@ def labor_costs(annual_work_hour):
     paid_off_hour = random.randint(0, 42)
     average_cost = (annual_wages + (annual_wages * benefit_rate)) / (annual_work_hour - paid_off_hour)
     return round(average_cost, 2)
-# print(labor_costs(1950))
+
 
 def maintenance_cost(annual_work_hour, total_volume):
     '''
@@ -36,35 +36,52 @@ def maintenance_cost(annual_work_hour, total_volume):
     :param annual_work_hour: integer
     :param total_volume: integer
     :return: float indicates maintenance cost
-    >>> maintenance_cost(1950, 45000)
-    volumes_per_box =
+    >>> cost = maintenance_cost(1950, 45000)
+    >>> cost
+    140400.0
+    >>> another_cost = maintenance_cost(1950, 30000)
+    >>> another_cost
+    93600.0
     '''
     maintenance_time = annual_work_hour * 0.04
     volumes_per_box = math.ceil(total_volume / 25)
     maintenance_cost = volumes_per_box * maintenance_time
     return round(maintenance_cost, 2)
-# print(maintenance_cost(1950, 50000))
+
 
 def cataloging_cost(annual_work_hour):
+    '''
+    This functions is to calculate cataloging cost per a book. A cataloger can catalog books between 8 and 12 a day. The function randomly choose a catalog's capacity. Based on labor costs, the function caculates a cataloging cost per a book.
+    :param annual_work_hour: integer
+    :return: float.
+    >>> a = cataloging_cost(1950)
+    >>> 20 < a < 50
+    True
+    >>> 50 < a < 100
+    False
+    '''
     day_cataloging = random.randint(8, 12)
     daily_labor = labor_costs(annual_work_hour) * 8
     cost_per_book = daily_labor / day_cataloging
     return round(cost_per_book, 2)
-# print(cataloging_cost(1950))
+
 
 def get_book_list(num_of_titles, annual_work_hour):
     '''
     This is getting attributes of books, thickness and prices. The price will caculate randomly depedning on its thickness.
     :param num_of_titles: Integer. a number of titles a librarian would like to purchase.
     :return: DataFrame, columns are thickness and price.
-    >>> a = all_book(10)
-    >>> len(a)
-        10
-    >>> 20 < thickness_list < 50000
+    >>> a = get_book_list(10, 1950)
+    >>> a.count()
+    Thickness          10
+    Price              10
+    Demands            10
+    cataloging_cost    10
+    dtype: int64
+    >>> 10 * 0.01 < a['Thickness'][0] < 2000 * 0.05
     True
-    >>> 1 < price_list < 200
+    >>> 10 * 0.01 < a['Price'][0] < 2000 * 0.1
     True
-
     '''
     cost_per_book = cataloging_cost(annual_work_hour)
     pages = np.random.randint(10, 2000, size=num_of_titles)
@@ -86,7 +103,7 @@ def get_book_list(num_of_titles, annual_work_hour):
                             'cataloging_cost': cost_per_book})
     return df
 
-# print(get_book_list(10, 1950))
+
 
 def vendor_discount(num_of_titles):
     '''
@@ -105,22 +122,41 @@ def vendor_discount(num_of_titles):
     elif num_of_titles >= 500:
         return 0.05
 
-def select_book(plan, budget, space):
 
-    # print('This is plan \n\n', plan, '\n')
-    # def select_book(plan, space, budget):
+def select_book(plan, budget, space):
+    '''
+    Select books from the book list generated "get book list" function based on budget and space.
+    :param plan: Data Frame
+    :param budget: integer. A Library's annual budget for acuiqisionts including cataloging and maintenance consts.
+    :param space: integer. Available shelf space.
+    :return: Data Frame for possible purchasing books.
+    >>> plan = get_book_list(10, 1950)
+    >>> a = select_book(plan, 1000, 500)
+    >>> a.isnull().values.any()
+    False
+    '''
     select_plan = plan.copy(deep=True)
     select_plan['total_cost_per_book'] = select_plan['Price'] + select_plan['cataloging_cost']
-    # print('This is select plan\n\n', select_plan, '\n')
+
     select_plan['cost_accumulate'] = select_plan['total_cost_per_book'].cumsum().where(lambda x: x <= budget)
-    # print('thisi is price\n\n', select_plan)
+
     select_plan['Total_thickness'] = select_plan['Thickness'].cumsum().where(lambda x:x <= space)
-    # print('This is thickness\n\n', select_plan)
+
     acquisitions = select_plan.dropna()
     return acquisitions
 
 
-def MonteCarloSimulation(annual_work_hour, total_volume, budget, space, num_of_titles):
+def MonteCarloSimulation(annual_work_hour, total_volume, budget, space, num_of_titles) -> list:
+    '''
+    This function an MC simulation for acquisitions. There are two stragegies for getting books: users' demands and number of books as many as possible in a budget and space.
+    :param annual_work_hour: integer
+    :param total_volume: integer
+    :param budget: float
+    :param space: float
+    :param num_of_titles: integer
+    :return: list which contains number of books, costs, and thickness of both users' demand and expansion of volumes of collection (considering book price at first)
+
+    '''
     acquisition_budget = budget - maintenance_cost(annual_work_hour, total_volume)
 
     plan = get_book_list(num_of_titles, annual_work_hour)
@@ -140,32 +176,21 @@ def MonteCarloSimulation(annual_work_hour, total_volume, budget, space, num_of_t
     price_thickness = math.ceil(price_acquisition['Thickness'].sum())
 
     sim_data = [demand_book, demand_cost, demand_thickness, price_book, price_cost, price_thickness]
-    # print(demand_book, demand_cost, demand_thickness, price_book, price_cost, price_thickness)
-    # print(sim_data)
-
-    # print(price_acquisition)
 
     return sim_data
-
-
 
 
 if __name__ == '__main__':
 
 
-    datas = []
+    data = []
     for i in range(100):
-        data = MonteCarloSimulation(1950, 50000, 1000000000, 10000, 100000)
-        datas.append(data)
-    simulation_result = pd.DataFrame(datas, columns=['num_of_books_by_demand',
+        list = MonteCarloSimulation(1950, 50000, 1000000000, 10000, 100000)
+        data.append(list)
+    simulation_result = pd.DataFrame(data, columns=['num_of_books_by_demand',
                                                      'total_cost_by_demand',
                                                      'total_thickness_by_demand',
                                                      'num_of_books_by_price',
                                                      'total_cost_by_price',
                                                      'total_thickness_by_price'])
     print(simulation_result)
-
-
-
-
-
