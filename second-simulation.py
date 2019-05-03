@@ -29,47 +29,65 @@ def maintenance_cost(annual_work_hour, total_volume):
     :param annual_work_hour: integer
     :param total_volume: integer
     :return: float indicates maintenance cost
-    >>> maintenance_cost(1950, 45000)
-    volumes_per_box =
+    >>> maintenance_cost(1950, 50000)
+    156000.0
     """
     maintenance_time = annual_work_hour * 0.04
     volumes_per_box = math.ceil(total_volume / 25)
     maintenance_cost = volumes_per_box * maintenance_time
     return round(maintenance_cost, 2)
-# print(maintenance_cost(1950, 50000))
+
+
+print(maintenance_cost(1950, 50000))
 
 
 def cataloging_cost(annual_work_hour):
+    """
+    This function calculate the cataloging cost of each book. The cost is random in a range.
+    :param annual_work_hour: Integer. a cataloger's annual total work hours in general.
+    :return: Float. a cataloging cost of each book.
+    >>> cataloging_cost(1950)
+    30
+    """
     day_cataloging = random.randint(8, 12)
     daily_labor = labor_costs(annual_work_hour) * 8
     cost_per_book = daily_labor / day_cataloging
     return round(cost_per_book, 2)
-# print(cataloging_cost(1950))
 
 
-def get_book_list(num_of_titles, annual_work_hour):
+print(cataloging_cost(1950))
+
+
+def get_book_list(num_book, annual_work_hour):
     """
-    This is getting attributes of books, thickness and prices. The price will caculate randomly depedning on its thickness.
-    :param num_of_titles: Integer. a number of titles a librarian would like to purchase.
-    :return: DataFrame, columns are thickness and price.
-    >>> a = get_book_list(10)
+    This function generates a list of books that are randomly selected in pages, page thickness, price, and demand level.
+    :param num_book: Integer. the number of books that a random book list contains. a librarian will purchase books from it.
+    :param annual_work_hour: Integer. a cataloger's annual total work hours in general.
+    :return: DataFrame. the columns are thickness, price, demand, and cataloging cost.
+    >>> a = get_book_list(10, 1950)
     >>> len(a)
         10
-    >>> 20 < thickness_list < 50000
+    >>> 10 <= pages <= 2000
     True
-    >>> 1 < price_list < 200
+    >>> 0.01 <= page_thickness < 0.05
+    True
+    >>> 0.1 <= thickness < 100
+    True
+    >>> 0.01 <= page_price < 0.1
+    True
+    >>> 0.1 <= price < 200
     True
     """
     cost_per_book = cataloging_cost(annual_work_hour)
-    pages = np.random.randint(10, 2000, size=num_of_titles)
-    page_thickness = np.random.uniform(0.01, 0.05, size=num_of_titles)
+    pages = np.random.randint(10, 2000, size=num_book)
+    page_thickness = np.random.uniform(0.01, 0.05, size=num_book)
     thickness = np.around(page_thickness * pages, decimals=2)
     page_price = random.uniform(0.01, 0.1)
     price = np.around(page_price * pages, decimals=2)
     # Three types of demand indicates 3 is high, 2 medium, and 1 low.
     demand_list = ['1', '2', '3']
     demands = []
-    for i in range(num_of_titles):
+    for i in range(num_book):
         demand = random.choice(demand_list)
         # print(demand)
         demands.append(demand)
@@ -80,14 +98,16 @@ def get_book_list(num_of_titles, annual_work_hour):
                             'cataloging_cost': cost_per_book})
     return df
 
-# print(get_book_list(10, 1950))
+
+print(get_book_list(10, 1950))
 
 
 def get_ebook_list(num_ebook, annual_work_hour):
     """
-
-    :param num_ebook:
-    :return:
+    This function generates a list of ebooks that are randomly selected in pages, prices, demand level, and contract type.
+    :param num_ebook: Integer. the number of ebooks that a random ebook list contains. a librarian will purchase ebooks from it.
+    :param annual_work_hour: Integer. a cataloger's annual total work hours in general.
+    :return: DataFrame. the columns are price of printed version, demand level, contract type, ebook price, and cataloging cost.
     """
     cost_per_book = cataloging_cost(annual_work_hour)
     pages = np.random.randint(10, 2000, size=num_ebook)
