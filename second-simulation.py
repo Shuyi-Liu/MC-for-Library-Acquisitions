@@ -108,6 +108,18 @@ def get_ebook_list(num_ebook, annual_work_hour):
     :param num_ebook: Integer. the number of ebooks that a random ebook list contains. a librarian will purchase ebooks from it.
     :param annual_work_hour: Integer. a cataloger's annual total work hours in general.
     :return: DataFrame. the columns are price of printed version, demand level, contract type, ebook price, and cataloging cost.
+    >>> 10 <= pages <= 2000
+    True
+    >>> 0.01 <= page_price < 0.1
+    True
+    >>> 0.1 <= printed_price < 200
+    True
+    >>> 0.13<= contract_price_1 < 260
+    True
+    >>> 0.195 <= contract_price_2 < 390
+    True
+    >>> 0.26 <= contract_price_3 < 520
+    True
     """
     cost_per_book = cataloging_cost(annual_work_hour)
     pages = np.random.randint(10, 2000, size=num_ebook)
@@ -155,23 +167,27 @@ def get_ebook_list(num_ebook, annual_work_hour):
 print(get_ebook_list(20, 1950))
 
 
-def vendor_discount(num_physical):
+def vendor_discount(num_book_buy):
     """
-    Discount percentage vendor will offer.
-    :param num_physical: Integer. A number of titles a librarian is going to purchase from a vendor
+    This function calculates the percentage of discount that a vendor will offer based on how many books you purchase.
+    :param num_book: Integer. A number of books that a librarian will purchase.
     :return: float.
-    >>> vendor_discount(50)
-    0.01
+    >>> vendor_discount(1000)
+    0.05
     >>> vendor_discount(280)
     0.02
+    >>> vendor_discount(50)
+    0.01
     """
-    if num_physical < 100:
+    if num_book_buy < 100:
         return 0.01
-    elif 100 <= num_physical < 500:
+    elif 100 <= num_book_buy < 500:
         return 0.02
-    elif num_physical >= 500:
+    elif num_book_buy >= 500:
         return 0.05
 
+
+print(vendor_discount(280))
 
 # def book_price_solution(book_plan):
 #     """
