@@ -1,5 +1,8 @@
 """
 Simulation for Library Acquisitions.
+This program is to simulate to buy "printed books" in a library. The purpose of the simulation program is to help librarian's desicion making for acquisitions.
+This program considers two limited condition: budget and space.
+This program considers two possible factors that impact the librarian's making decision for acquisitions: users' demands and expansion of volumes of collections.
 
 IS590PR by Professor John Weible
 """
@@ -15,8 +18,8 @@ def labor_costs(annual_work_hour):
     :param annual_work_hour: integer.
     :return: float which indicates hourly wage.
     >>> a = labor_costs(1950)
-    >>> 50000 < benefit_rate < 70000
-    True
+    >>> type(a)
+    <class 'float'>
     >>> 10 < a < 50
     True
     '''
