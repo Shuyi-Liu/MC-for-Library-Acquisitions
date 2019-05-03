@@ -37,15 +37,14 @@ def maintenance_cost(annual_work_hour, total_volume):
     :param total_volume: integer
     :return: float indicates maintenance cost
     >>> cost = maintenance_cost(1950, 45000)
-    >>> cost
-    140400.0
-    >>> another_cost = maintenance_cost(1950, 30000)
-    >>> another_cost
-    93600.0
+    >>> type(cost)
+    <class 'float'>
+    >>> cost < 50000
+    True
     '''
-    maintenance_time = annual_work_hour * 0.04
+    maintenance_labor = labor_costs(annual_work_hour) * 0.04
     volumes_per_box = math.ceil(total_volume / 25)
-    maintenance_cost = volumes_per_box * maintenance_time
+    maintenance_cost = volumes_per_box * maintenance_labor
     return round(maintenance_cost, 2)
 
 
@@ -104,7 +103,6 @@ def get_book_list(num_of_titles, annual_work_hour):
     return df
 
 
-
 def vendor_discount(num_of_titles):
     '''
     Discount percentage vendor will offer.
@@ -155,7 +153,13 @@ def MonteCarloSimulation(annual_work_hour, total_volume, budget, space, num_of_t
     :param space: float
     :param num_of_titles: integer
     :return: list which contains number of books, costs, and thickness of both users' demand and expansion of volumes of collection (considering book price at first)
-
+    >>> list = MonteCarloSimulation(1950, 50000, 1000000000, 10000, 100000)
+    >>> len(list)
+    6
+    >>> list[0] < 100000
+    True
+    >>> list[3] < 100000
+    True
     '''
     acquisition_budget = budget - maintenance_cost(annual_work_hour, total_volume)
 
@@ -172,7 +176,7 @@ def MonteCarloSimulation(annual_work_hour, total_volume, budget, space, num_of_t
     demand_thickness = math.ceil(demand_acquisition['Thickness'].sum())
 
     price_book = price_acquisition['Price'].count()
-    price_cost = round(price_acquisition['total_cost_per_book'].sum() * 1 - vendor_discount(price_book), 2)
+    price_cost = round(price_acquisition['total_cost_per_book'].sum() * (1 - vendor_discount(price_book), 2))
     price_thickness = math.ceil(price_acquisition['Thickness'].sum())
 
     sim_data = [demand_book, demand_cost, demand_thickness, price_book, price_cost, price_thickness]
