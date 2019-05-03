@@ -144,7 +144,6 @@ def MonteCarloSimulation(annual_work_hour, total_volume, budget, space, num_of_t
 
     return sim_data
 
-# print(MonteCarloSimulation(1950, 50000, 1000000000, 10000, 100000))
 
 
 
