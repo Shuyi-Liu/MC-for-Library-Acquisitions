@@ -1,3 +1,8 @@
+"""
+Simulation for Library Acquisitions.
+
+IS590PR by Professor John Weible
+"""
 import random
 import numpy as np
 import pandas as pd
@@ -60,9 +65,9 @@ def get_book_list(num_of_titles, annual_work_hour):
     '''
     cost_per_book = cataloging_cost(annual_work_hour)
     pages = np.random.randint(10, 2000, size=num_of_titles)
-    page_thickness = random.uniform(0.01, 0.05)
+    page_thickness = np.random.uniform(0.01, 0.05, size=num_of_titles)
     thickness = np.around(page_thickness * pages, decimals=2)
-    page_price = random.uniform(0.01, 0.1)
+    page_price = np.random.uniform(0.01, 0.1, size=num_of_titles)
     price = np.around(page_price * pages, decimals=2)
     # Three types of demand indicates 3 is high, 2 medium, and 1 low.
     demand_list = ['1', '2', '3']
@@ -112,13 +117,10 @@ def select_book(plan, budget, space):
     return acquisitions
 
 
-
 def MonteCarloSimulation(annual_work_hour, total_volume, budget, space, num_of_titles):
     acquisition_budget = budget - maintenance_cost(annual_work_hour, total_volume)
 
-
     plan = get_book_list(num_of_titles, annual_work_hour)
-
 
     demand_order = plan.sort_values(by='Demands', ascending=False)
     price_order = plan.sort_values(by='Price', ascending=True)
@@ -153,12 +155,12 @@ if __name__ == '__main__':
     for i in range(100):
         data = MonteCarloSimulation(1950, 50000, 1000000000, 10000, 100000)
         datas.append(data)
-    simulation_result = pd.DataFrame(datas, columns={'num_of_books_by_demand',
+    simulation_result = pd.DataFrame(datas, columns=['num_of_books_by_demand',
                                                      'total_cost_by_demand',
                                                      'total_thickness_by_demand',
                                                      'num_of_books_by_price',
                                                      'total_cost_by_price',
-                                                     'total_thickness_by_price'})
+                                                     'total_thickness_by_price'])
     print(simulation_result)
 
 
