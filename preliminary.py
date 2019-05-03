@@ -37,15 +37,14 @@ def maintenance_cost(annual_work_hour, total_volume):
     :param total_volume: integer
     :return: float indicates maintenance cost
     >>> cost = maintenance_cost(1950, 45000)
-    >>> cost
-    140400.0
-    >>> another_cost = maintenance_cost(1950, 30000)
-    >>> another_cost
-    93600.0
+    >>> type(cost)
+    <class 'float'>
+    >>> cost < 50000
+    True
     '''
-    maintenance_time = annual_work_hour * 0.04
+    maintenance_labor = labor_costs(annual_work_hour) * 0.04
     volumes_per_box = math.ceil(total_volume / 25)
-    maintenance_cost = volumes_per_box * maintenance_time
+    maintenance_cost = volumes_per_box * maintenance_labor
     return round(maintenance_cost, 2)
 
 
@@ -102,7 +101,6 @@ def get_book_list(num_of_titles, annual_work_hour):
                             'Demands': demands,
                             'cataloging_cost': cost_per_book})
     return df
-
 
 
 def vendor_discount(num_of_titles):
@@ -162,7 +160,6 @@ def MonteCarloSimulation(annual_work_hour, total_volume, budget, space, num_of_t
     True
     >>> list[3] < 100000
     True
-
     '''
     acquisition_budget = budget - maintenance_cost(annual_work_hour, total_volume)
 
