@@ -11,11 +11,13 @@ def labor_costs(annual_work_hour):
     Paid off hours are the hours that a cataloger does not work but still get payments.
     :param annual_work_hour: integer. A cataloger's annual work hours.
     :return: float. A cataloger's hourly wage.
-    >>> 50000 <= annual_wages <= 70000
-    True
-    >>> 0 <= benefit_rate < 0.3
-    True
-    >>> 0<= paid_off_hour <= 42
+    # >>> 50000 <= annual_wages <= 70000
+    # True
+    # >>> 0 <= benefit_rate < 0.3
+    # True
+    # >>> 0<= paid_off_hour <= 42
+    # True
+    >>> 25 < labor_costs(1950) < 48
     True
     """
     annual_wages = random.randint(50000, 70000)
@@ -35,8 +37,8 @@ def maintenance_cost(annual_work_hour, total_volume):
     :param annual_work_hour: integer. A cataloger's annual work hours.
     :param total_volume: integer. The total collections in a library.
     :return: float. The maintenance cost.
-    >>> maintenance_cost(1950, 50000)
-    156000.0
+    >>> 2000 < maintenance_cost(1950, 50000) < 3840
+    True
     """
     maintenance_fee = labor_costs(annual_work_hour) * 0.04
     volumes_per_box = math.ceil(total_volume / 25)
@@ -52,8 +54,8 @@ def cataloging_cost(annual_work_hour):
     This function calculate the cataloging cost of each book. The cost is random in a range.
     :param annual_work_hour: Integer. a cataloger's annual total work hours in general.
     :return: Float. a cataloging cost of each book.
-    >>> cataloging_cost(1950)
-    30
+    >>> 16.6 < cataloging_cost(1950) < 48
+    True
     """
     day_cataloging = random.randint(8, 12)
     daily_labor = labor_costs(annual_work_hour) * 8
@@ -61,14 +63,16 @@ def cataloging_cost(annual_work_hour):
     return round(cost_per_book, 2)
 
 
-print(cataloging_cost(1950))
+# print(cataloging_cost(1950))
 
 
 def get_price(num_of_titles):
     """
-
-    :param num_of_titles:
-    :return:
+    This function calculates the price of printed books. The price is random in a range.
+    :param num_of_titles: the number of books in a random list.
+    :return: float. the random printed book prices.
+    >>> 0.1 < get_price(1000) < 200
+    True
     """
     pages = np.random.randint(10, 2000, size=num_of_titles)
     page_price = random.uniform(0.01, 0.1)
@@ -88,14 +92,14 @@ def get_book_list(num_of_titles, annual_work_hour):
     >>> a = get_book_list(10, 1950)
     >>> len(a)
         10
-    >>> 10 <= pages <= 2000
-    True
-    >>> 0.01 <= page_thickness < 0.05
-    True
-    >>> 0.1 <= thickness < 100
-    True
-    >>> 0.1 <= price < 200
-    True
+    # >>> 10 <= pages <= 2000
+    # True
+    # >>> 0.01 <= page_thickness < 0.05
+    # True
+    # >>> 0.1 <= thickness < 100
+    # True
+    # >>> 0.1 <= price < 200
+    # True
     """
     cost_per_book = cataloging_cost(annual_work_hour)
     pages = np.random.randint(10, 2000, size=num_of_titles)
@@ -126,15 +130,17 @@ def get_ebook_list(num_of_titles, annual_work_hour):
     :param num_of_titles: Integer. the number of ebooks that a random ebook list contains. a librarian will purchase ebooks from it.
     :param annual_work_hour: Integer. a cataloger's annual total work hours in general.
     :return: DataFrame. the columns are price of printed version, demand level, contract type, ebook price, and cataloging cost.
-    True
-    >>> 0.1 <= printed_price < 200
-    True
-    >>> 0.13<= contract_price_1 < 260
-    True
-    >>> 0.195 <= contract_price_2 < 390
-    True
-    >>> 0.26 <= contract_price_3 < 520
-    True
+    >>> a = get_ebook_list(10, 1950)
+    >>> len(a)
+    10
+    # >>> 0.1 <= printed_price < 200
+    # True
+    # >>> 0.13<= contract_price_1 < 260
+    # True
+    # >>> 0.195 <= contract_price_2 < 390
+    # True
+    # >>> 0.26 <= contract_price_3 < 520
+    # True
     """
     cost_per_book = cataloging_cost(annual_work_hour)
     printed_price = get_price(num_of_titles)
@@ -177,14 +183,14 @@ def get_ebook_list(num_of_titles, annual_work_hour):
     return df
 
 
-print(get_ebook_list(20, 1950))
+print(get_ebook_list(10, 1950))
 
 
 def vendor_discount(num_book_buy):
     """
     This function calculates the percentage of discount that a vendor will offer based on how many books you purchase.
     :param num_book_buy: Integer. A number of books that a librarian will purchase.
-    :return: float.
+    :return: float. A discount rate.
     >>> vendor_discount(1000)
     0.05
     >>> vendor_discount(280)
@@ -217,7 +223,7 @@ def select_book(order, book_budget, space):
     This function will select books from the fist row till the row that meets the budget and space limitations.
     :param order: Data Frame. The list we will select from.
     :param book_budget: integer. A Library's annual budget for acquisitions.
-                            The budget also includes the cost of cataloging and maintenance.
+                                 The budget also includes the cost of cataloging and maintenance.
     :param space: integer. Available shelf space.
     :return: Data Frame. The list of books we select for purchasing.
     >>> plan = get_book_list(10, 1950)
@@ -258,17 +264,19 @@ print(select_ebook(ebook_price_order, 20000))
 def MonteCarloSimulation(annual_work_hour, total_volume, budget, space, num_of_titles, book_rate, ebook_rate) -> list:
     """
     This function an MC simulation for acquisitions. There are two strategies for getting books:
-    1. Meet the users' demands first. (Buy resources with high demand.)
-    2. Buy as many books as possible in a budget and space.
+    1. Demand Strategic: Meet the users' demands first. (Buy resources with high demand.)
+    2. Price Strategic: Buy as many books as possible in a budget and space.
     :param annual_work_hour: integer. a cataloger's annual total work hours in general.
     :param total_volume: integer. The total collections in a library.
     :param budget: integer. The budget for purchasing books and ebooks.
-                   It includes the cataloging fee and maintenance cost.
+                   It also includes the cataloging fee and maintenance cost.
     :param space: integer. Available shelf space.
-    :param num_of_titles: integer
-    :param book_rate:
-    :param ebook_rate:
-    :return: list which contains number of books, costs, and thickness of both users' demand and expansion of volumes of collection (considering book price at first)
+    :param num_of_titles: integer. a number of books in a random list.
+    :param book_rate: the percentage of budget for books.
+    :param ebook_rate: the percentage of budget for ebooks.
+    :return: a list of the results of the two strategics.
+             book's amount, cost, and thickness from the two strategics.
+             ebook's amount, cost from the two strategics.
     """
     acquisition_budget = budget - maintenance_cost(annual_work_hour, total_volume)
     book_budget = acquisition_budget * book_rate
