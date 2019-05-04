@@ -17,10 +17,19 @@ In the simulation, we consider two stragegies: users' demands and expansion of c
 
 We simulate two different cases, to purchase printed books only and to purchase printed and e-books together. In each case, we simulate 100 times.
  
+ 
 # Hypothesis
 1.     If a library purchases only printed books, the two strategies may not remarkably impact total number of books, total prices, and thickness.
 
 2.     If a library purchased both printed and electronic books, the two strategies remarkably impact total number of books and number of thickness; however, total prices are not significantly different.
+
+
+# About Codes and Files
+There are four files related to the simulation.
+Preliminary.py is the code of the MC simulation for purchasing only printed books.
+Preliminary_printed_book_acquisitions.ipynb explores the code and visualization.
+The second-simulation.py is the code of the MC simulation for purchasing both printed and electronic books.
+The second-simulation-notebook.ipynb explores the code and visualization.
 
  
 # Reference
