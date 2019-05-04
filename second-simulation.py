@@ -6,18 +6,17 @@ import math
 
 def labor_costs(annual_work_hour):
     """
-    This function calculates the hourly wage of a cataloger. The formulae is from the reference book.
+    This function calculates the hourly wage of a cataloger.
+    Hourly labor cost is calculated by using annual wages, befefit rate, and paid vacation hours.
+    (ALCTS Technical Services Costs Committee. "Guide to Cost Analysis of Acquisitions and Cataloging in Libraries," ALCTS Newsletter 2. no. 5, 1991: 49-52.)
     The annual wage is randomly selected from a wage range.
     Paid off hours are the hours that a cataloger does not work but still get payments.
     :param annual_work_hour: integer. A cataloger's annual work hours.
     :return: float. A cataloger's hourly wage.
-    # >>> 50000 <= annual_wages <= 70000
-    # True
-    # >>> 0 <= benefit_rate < 0.3
-    # True
-    # >>> 0<= paid_off_hour <= 42
-    # True
-    >>> 25 < labor_costs(1950) < 48
+    >>> a = labor_costs(1950)
+    >>> type(a)
+    <class 'float'>
+    >>> 10 < a < 50
     True
     """
     annual_wages = random.randint(50000, 70000)
@@ -33,11 +32,14 @@ def labor_costs(annual_work_hour):
 def maintenance_cost(annual_work_hour, total_volume):
     """
     This function calculates an annual maintenance cost of the total collections in a library.
-    The maintenance cost is calculated from the labor cost and the volume of collections.
+    The maintenance cost is calculated from the labor cost and the volume of collections. (Elise Calvi, Yvonne Carignan, Liz Dube, and Whitney Pape, The Preservation Manager's Guide to Cost Analysis, Chicago: American Library Association, 2006, 36-37.)
     :param annual_work_hour: integer. A cataloger's annual work hours.
     :param total_volume: integer. The total collections in a library.
     :return: float. The maintenance cost.
-    >>> 2000 < maintenance_cost(1950, 50000) < 3840
+    >>> cost = maintenance_cost(1950, 45000)
+    >>> type(cost)
+    <class 'float'>
+    >>> cost < 50000
     True
     """
     maintenance_fee = labor_costs(annual_work_hour) * 0.04
@@ -51,11 +53,14 @@ def maintenance_cost(annual_work_hour, total_volume):
 
 def cataloging_cost(annual_work_hour):
     """
-    This function calculate the cataloging cost of each book. The cost is random in a range.
+    This function calculate the cataloging cost of each book. The function randomly choose a catalog's productivity per day. (Robert H. Burger, Financial Management of Libraries and Information Centers, California and Colorado: Libraries Unlimited, 2017, 249-253.)
     :param annual_work_hour: Integer. a cataloger's annual total work hours in general.
     :return: Float. a cataloging cost of each book.
-    >>> 16.6 < cataloging_cost(1950) < 48
+    >>> a = cataloging_cost(1950)
+    >>> 20 < a < 50
     True
+    >>> 50 < a < 100
+    False
     """
     day_cataloging = random.randint(8, 12)
     daily_labor = labor_costs(annual_work_hour) * 8
@@ -71,7 +76,7 @@ def get_price(num_of_titles):
     This function calculates the price of printed books. The price is random in a range.
     :param num_of_titles: the number of books in a random list.
     :return: float. the random printed book prices.
-    >>> 0.1 < get_price(1000) < 200
+    >>> 0.1 < get_price(1000)[0] < 200
     True
     """
     pages = np.random.randint(10, 2000, size=num_of_titles)
@@ -80,26 +85,26 @@ def get_price(num_of_titles):
     return price
 
 
-print(get_price(20))
+# print(get_price(20))
 
 
 def get_book_list(num_of_titles, annual_work_hour):
     """
     This function generates a list of books that are randomly selected in pages, page thickness, price, and demand level.
-    :param num_of_titles: Integer. the number of books that a random book list contains. a librarian will purchase books from it.
+    :param num_of_titles: Integer. the number of books that a random book list contains. a librarian will purchase books from this list.
     :param annual_work_hour: Integer. a cataloger's annual total work hours in general.
     :return: DataFrame. the columns are thickness, price, demand, and cataloging cost.
     >>> a = get_book_list(10, 1950)
-    >>> len(a)
-        10
-    # >>> 10 <= pages <= 2000
-    # True
-    # >>> 0.01 <= page_thickness < 0.05
-    # True
-    # >>> 0.1 <= thickness < 100
-    # True
-    # >>> 0.1 <= price < 200
-    # True
+    >>> a.count()
+    Thickness          10
+    Price              10
+    Demand             10
+    cataloging cost    10
+    dtype: int64
+    >>> 0.1 < a['Thickness'][0] < 100
+    True
+    >>> 0.1 < a['Price'][0] < 200
+    True
     """
     cost_per_book = cataloging_cost(annual_work_hour)
     pages = np.random.randint(10, 2000, size=num_of_titles)
@@ -121,7 +126,7 @@ def get_book_list(num_of_titles, annual_work_hour):
     return df
 
 
-print(get_book_list(10, 1950))
+# print(get_book_list(10, 1950))
 
 
 def get_ebook_list(num_of_titles, annual_work_hour):
@@ -133,14 +138,8 @@ def get_ebook_list(num_of_titles, annual_work_hour):
     >>> a = get_ebook_list(10, 1950)
     >>> len(a)
     10
-    # >>> 0.1 <= printed_price < 200
-    # True
-    # >>> 0.13<= contract_price_1 < 260
-    # True
-    # >>> 0.195 <= contract_price_2 < 390
-    # True
-    # >>> 0.26 <= contract_price_3 < 520
-    # True
+    >>> 0.1 < a['Ebook Price'][0] < 520
+    True
     """
     cost_per_book = cataloging_cost(annual_work_hour)
     printed_price = get_price(num_of_titles)
@@ -183,7 +182,7 @@ def get_ebook_list(num_of_titles, annual_work_hour):
     return df
 
 
-print(get_ebook_list(10, 1950))
+# print(get_ebook_list(10, 1950))
 
 
 def vendor_discount(num_book_buy):
@@ -206,22 +205,14 @@ def vendor_discount(num_book_buy):
         return 0.05
 
 
-print(vendor_discount(280))
-
-
-book_plan = get_book_list(1000, 1950)
-ebook_plan = get_ebook_list(1000, 1950)
-book_demand_order = book_plan.sort_values(by='Demand', ascending=False)
-book_price_order = book_plan.sort_values(by='Price', ascending=True)
-ebook_demand_order = ebook_plan.sort_values(by='Demand', ascending=False)
-ebook_price_order = ebook_plan.sort_values(by='Ebook Price', ascending=True)
+# print(vendor_discount(280))
 
 
 def select_book(order, book_budget, space):
     """
     This function selects the books from the book list that generated by "get_book_list" function.
     This function will select books from the fist row till the row that meets the budget and space limitations.
-    :param order: Data Frame. The list we will select from.
+    :param order: Data Frame. The list we will select from the book list.
     :param book_budget: integer. A Library's annual budget for acquisitions.
                                  The budget also includes the cost of cataloging and maintenance.
     :param space: integer. Available shelf space.
@@ -239,16 +230,22 @@ def select_book(order, book_budget, space):
     return acquisitions
 
 
-print(select_book(book_demand_order, 20000, 50000))
-print(select_book(book_price_order, 20000, 50000))
+# print(select_book(book_demand_order, 20000, 50000))
+# print(select_book(book_price_order, 20000, 50000))
 
 
 def select_ebook(order, ebook_budget):
     """
-
-    :param order:
-    :param ebook_budget:
-    :return:
+    This function selects the ebooks from the ebook list that generated by "get_ebook_list" function.
+    This function will select books from the fist row till the row that meets the budget and space limitations.
+    :param order: Data Frame. The list we will select from the ebook list.
+    :param ebook_budget: A Library's annual budget for acquisitions.
+                        The budget also includes the cost of cataloging and maintenance.
+    :return: Data Frame. The list of books we select for purchasing.
+    >>> plan = get_ebook_list(10, 1950)
+    >>> a = select_ebook(plan, 1000)
+    >>> a.isnull().values.any()
+    False
     """
     select_plan = order.copy(deep=True)
     select_plan['total_cost_per_ebook'] = select_plan['Ebook Price'] + select_plan['cataloging cost']
@@ -256,9 +253,9 @@ def select_ebook(order, ebook_budget):
     acquisitions = select_plan.dropna()
     return acquisitions
 
-
-print(select_ebook(ebook_demand_order, 20000))
-print(select_ebook(ebook_price_order, 20000))
+#
+# print(select_ebook(ebook_demand_order, 20000))
+# print(select_ebook(ebook_price_order, 20000))
 
 
 def MonteCarloSimulation(annual_work_hour, total_volume, budget, space, num_of_titles, book_rate, ebook_rate) -> list:
@@ -277,6 +274,13 @@ def MonteCarloSimulation(annual_work_hour, total_volume, budget, space, num_of_t
     :return: a list of the results of the two strategics.
              book's amount, cost, and thickness from the two strategics.
              ebook's amount, cost from the two strategics.
+    >>> list = MonteCarloSimulation(1950, 50000, 20000, 50000, 1000, 0.5, 0.5)
+    >>> len(list)
+    10
+    >>> list[0] < 50000
+    True
+    >>> list[3] < 50000
+    True
     """
     acquisition_budget = budget - maintenance_cost(annual_work_hour, total_volume)
     book_budget = acquisition_budget * book_rate
@@ -310,26 +314,54 @@ def MonteCarloSimulation(annual_work_hour, total_volume, budget, space, num_of_t
     sim_data = [book_demand_num, book_demand_cost, book_demand_thickness, book_price_num, book_price_cost, book_price_thickness,
                 ebook_demand_num, ebook_demand_cost, ebook_price_num, ebook_price_cost]
 
-    print('The Book Demand Strategic:\n',
-          'Purchase amount:', book_demand_num, '\n',
-          'Total Price:', book_demand_cost, '\n',
-          'Total Thickness:', book_demand_thickness, '\n',
-          '\n',
-          'The E-book Demand Strategic:\n',
-          'Purchase amount:', ebook_demand_num, '\n',
-          'Total Price:', ebook_demand_cost, '\n',
-          '\n\n',
-          'The Book Price Strategic:\n',
-          'Purchase amount:', book_price_num, '\n',
-          'Total Price:', book_price_cost, '\n',
-          'Total Thickness:', book_price_thickness, '\n',
-          '\n',
-          'The E-book Price Strategic:\n',
-          'Purchase amount:', ebook_price_num, '\n',
-          'Total Price:', ebook_price_cost)
+    # print('The Book Demand Strategic:\n',
+    #       'Purchase amount:', book_demand_num, '\n',
+    #       'Total Price:', book_demand_cost, '\n',
+    #       'Total Thickness:', book_demand_thickness, '\n',
+    #       '\n',
+    #       'The E-book Demand Strategic:\n',
+    #       'Purchase amount:', ebook_demand_num, '\n',
+    #       'Total Price:', ebook_demand_cost, '\n',
+    #       '\n\n',
+    #       'The Book Price Strategic:\n',
+    #       'Purchase amount:', book_price_num, '\n',
+    #       'Total Price:', book_price_cost, '\n',
+    #       'Total Thickness:', book_price_thickness, '\n',
+    #       '\n',
+    #       'The E-book Price Strategic:\n',
+    #       'Purchase amount:', ebook_price_num, '\n',
+    #       'Total Price:', ebook_price_cost)
 
     return sim_data
 
 
-MonteCarloSimulation(1950, 50000, 20000, 50000, 1000, 0.5, 0.5)
-# print(MonteCarloSimulation(1950, 50000, 20000, 50000, 1000, 0.5, 0.5))
+# MonteCarloSimulation(1950, 50000, 20000, 50000, 1000, 0.5, 0.5)
+
+
+if __name__ == '__main__':
+
+    data = []
+    for i in range(100):
+        list = MonteCarloSimulation(1950, 50000, 20000, 100000, 1000, 0.5, 0.5)
+        data.append(list)
+    simulation_result = pd.DataFrame(data, columns=['num_of_book_by_demand',
+                                                    'book_cost_by_demand',
+                                                    'book_thickness_by_demand',
+                                                    'num_of_book_by_price',
+                                                    'book_cost_by_price',
+                                                    'book_thickness_by_price',
+                                                    'num_of_ebook_by_demand',
+                                                    'ebook_cost_by_demand',
+                                                    'num_of_ebook_by_price',
+                                                    'ebook_cost_by_price'])
+
+    simulation_result['total_num_of_books_by_demand'] = \
+        simulation_result['num_of_book_by_demand'] + simulation_result['num_of_ebook_by_demand']
+    simulation_result['total_cost_by_demand'] = \
+        simulation_result['book_cost_by_demand'] + simulation_result['ebook_cost_by_demand']
+    simulation_result['total_num_of_books_by_price'] = \
+        simulation_result['num_of_book_by_price'] + simulation_result['num_of_ebook_by_price']
+    simulation_result['total_cost_by_price'] = \
+        simulation_result['book_cost_by_price'] + simulation_result['ebook_cost_by_demand']
+
+    print(simulation_result)
