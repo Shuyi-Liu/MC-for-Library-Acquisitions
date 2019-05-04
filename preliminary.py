@@ -201,5 +201,6 @@ if __name__ == '__main__':
                                                     'num_of_books_by_price',
                                                     'total_cost_by_price',
                                                     'total_thickness_by_price'])
+
     print(simulation_result)
 
